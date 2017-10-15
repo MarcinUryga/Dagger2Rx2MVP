@@ -16,13 +16,9 @@ interface LoginContract {
 
         fun hideKeyboard()
 
-        fun validateEmailPattern(): Boolean
+        fun validateEmailField(): Boolean
 
-        fun validateEmptyEmailField(): Boolean
-
-        fun validatePasswordLength(): Boolean
-
-        fun validateEmptyPasswordField(): Boolean
+        fun validatePasswordField(): Boolean
 
         fun showEmailError()
 

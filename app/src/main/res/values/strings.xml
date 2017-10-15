@@ -13,4 +13,6 @@
     <string name="password_should_be_longer">Password should be longer than 3 chars!</string>
     <string name="error">Error</string>
     <string name="ok">OK</string>
+    <string name="login">Login</string>
+    <string name="wrong_password">Wrong password!</string>
 </resources>

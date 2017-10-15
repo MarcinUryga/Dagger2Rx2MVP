@@ -1,35 +1,69 @@
 package com.example.marcin.mypodcasts.ui.register
 
+import com.example.marcin.mypodcasts.di.ScreenScope
+import com.example.marcin.mypodcasts.model.RegisterRequest
+import com.example.marcin.mypodcasts.mvp.BasePresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
+import javax.inject.Inject
+
 /**
  * Created by marci on 2017-10-13.
  */
-class RegisterPresenter(
-        private val view: RegisterContract.View
-) : RegisterContract.Presenter {
 
-    override fun onRegisterClicked() {
+@ScreenScope
+class RegisterPresenter @Inject constructor(
+        private val manager: RegisterManager
+) : BasePresenter<RegisterContract.View>(), RegisterContract.Presenter {
+
+    override fun onRegisterClicked(
+            name: String,
+            surname: String,
+            email: String,
+            password: String
+    ) {
         view.hideKeyboard()
-        validateRegisterInput()
+
+        validateRegisterInput(RegisterRequest(
+                username = "${name}_${surname}",
+                firstName = name,
+                lastName = surname,
+                email = email,
+                password = password
+        ))
     }
 
-    private fun validateRegisterInput() {
-        if (view.validateName()) {
+    private fun validateRegisterInput(registerRequest: RegisterRequest) {
+        if (view.validateNameField()) {
             view.showNameError()
         }
-        if (view.validateSurname()) {
+        if (view.validateSurnameField()) {
             view.showSurnameError()
         }
-        if (view.validateEmailPattern() || view.validateEmptyEmailField()) {
+        if (view.validateEmailField()) {
             view.showEmailError()
         }
-        if (view.validateEmptyPasswordField() || view.validatePasswordLength()) {
+        if (view.validatePasswordField()) {
             view.showPasswordError()
         }
-        if (view.validateEmptyConfirmPasswordField() || view.validateConfirmPasswordLength()) {
+        if (view.validateConfirmPasswordField()) {
             view.showConfirmPasswordError()
         } else {
-            view.startLoginActivity()
+            logintoApplication(registerRequest)
         }
+    }
+
+    private fun logintoApplication(registerRequest: RegisterRequest) {
+        val disposable = manager.tryToRegister(registerRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+                    Timber.d(response.toString())
+                }, { error ->
+                    Timber.d(error.localizedMessage)
+                })
+        disposables?.add(disposable)
     }
 
 }

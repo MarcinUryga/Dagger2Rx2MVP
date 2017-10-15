@@ -40,37 +40,26 @@ class LoginActivity : BaseActivity<LoginContract.Presenter>(), LoginContract.Vie
         KeyboardUtils.hide(this.currentFocus)
     }
 
-    override fun validateEmailPattern(): Boolean {
+
+    override fun validateEmailField(): Boolean {
         usernameInputLayout.error = null
-        if (!Patterns.EMAIL_ADDRESS.matcher(usernameEditText.text).matches()) {
+        if (usernameEditText.text.isEmpty()) {
+            usernameErrorMessage = getString(R.string.this_field_cannot_be_empty)
+            return true
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(usernameEditText.text).matches()) {
             usernameErrorMessage = getString(R.string.this_is_not_an_email)
             return true
         }
         return false
     }
 
-    override fun validateEmptyEmailField(): Boolean {
-        usernameInputLayout.error = null
-        if (usernameEditText.text.isEmpty()) {
-            usernameErrorMessage = getString(R.string.this_field_cannot_be_empty)
-            return true
-        }
-        return false
-    }
-
-    override fun validatePasswordLength(): Boolean {
-        passwordInputLayout.error = null
-        if (passwordEditText.text.length <= 3) {
-            passwordErrorMessage = getString(R.string.password_should_be_longer)
-            return true
-        }
-        return false
-    }
-
-    override fun validateEmptyPasswordField(): Boolean {
+    override fun validatePasswordField(): Boolean {
         passwordInputLayout.error = null
         if (passwordEditText.text.isEmpty()) {
             passwordErrorMessage = getString(R.string.this_field_cannot_be_empty)
+            return true
+        } else if (passwordEditText.text.length <= 3) {
+            passwordErrorMessage = getString(R.string.password_should_be_longer)
             return true
         }
         return false

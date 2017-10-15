@@ -15,4 +15,9 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="TextInputLayout">
+        <item name="android:textColor">@color/login_text_color_selector</item>
+        <item name="errorEnabled">true</item>
+    </style>
+
 </resources>

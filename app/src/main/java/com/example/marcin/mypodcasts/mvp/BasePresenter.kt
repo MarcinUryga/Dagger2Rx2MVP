@@ -10,7 +10,7 @@ abstract class BasePresenter<T : MvpView> : MvpPresenter {
 
     @Inject lateinit var view: T
 
-    protected var disposable: CompositeDisposable? = null
+    protected var disposables: CompositeDisposable? = null
 
     override fun onViewCreated() {
         //to be used by child class
@@ -21,12 +21,12 @@ abstract class BasePresenter<T : MvpView> : MvpPresenter {
     }
 
     override fun resume() {
-        disposable = CompositeDisposable()
+        disposables = CompositeDisposable()
     }
 
     override fun pause() {
-        disposable?.clear()
-        disposable = null
+        disposables?.clear()
+        disposables = null
     }
 
     override fun stop() {

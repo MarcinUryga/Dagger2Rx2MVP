@@ -23,10 +23,10 @@ class LoginPresenter @Inject constructor(
     }
 
     private fun validateLoginInput() {
-        if (view.validateEmailPattern() || view.validateEmptyEmailField()) {
+        if (view.validateEmailField()) {
             view.showEmailError()
         }
-        if (view.validateEmptyPasswordField() || view.validatePasswordLength()) {
+        if (view.validatePasswordField()) {
             view.showPasswordError()
         } else {
             view.startMainMenuActivity()
