@@ -10,7 +10,7 @@ interface RegisterContract {
 
     interface View : MvpView {
 
-        fun startLoginActivity()
+        fun startMainActivity()
 
         fun hideKeyboard()
 
@@ -33,6 +33,10 @@ interface RegisterContract {
         fun showPasswordError()
 
         fun showConfirmPasswordError()
+
+        fun showProgressBar()
+
+        fun hideProgressBar()
     }
 
     interface Presenter : MvpPresenter {

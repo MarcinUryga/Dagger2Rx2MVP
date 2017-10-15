@@ -1,5 +1,10 @@
 package com.example.marcin.mypodcasts.ui.register;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.example.marcin.mypodcasts.PodcastApplication;
 import com.example.marcin.mypodcasts.api.PodcastApi;
 
 import dagger.Binds;
@@ -20,8 +25,7 @@ public abstract class RegisterModule {
     abstract RegisterContract.Presenter bindPresenter(RegisterPresenter presenter);
 
     @Provides
-    static RegisterManager provideRegisterManager(RegisterActivity registerActivity, PodcastApi podcastApi) {
-        return new RegisterManager(podcastApi);
+    static UserRegisterUseCase provideRegisterManager(RegisterActivity registerActivity, PodcastApi podcastApi) {
+        return new UserRegisterUseCase(podcastApi);
     }
-
 }

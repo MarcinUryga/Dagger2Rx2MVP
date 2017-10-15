@@ -1,5 +1,6 @@
 package com.example.marcin.mypodcasts.mvp
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity

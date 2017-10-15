@@ -3,13 +3,14 @@ package com.example.marcin.mypodcasts.ui.register
 import com.example.marcin.mypodcasts.api.PodcastApi
 import com.example.marcin.mypodcasts.model.RegisterRequest
 import com.example.marcin.mypodcasts.model.UserResponse
+import io.reactivex.Flowable
 import io.reactivex.Observable
 
 /**
  * Created by marci on 2017-10-13.
  */
 
-class RegisterManager(
+class UserRegisterUseCase(
         private val podcastApi: PodcastApi
 ) {
 

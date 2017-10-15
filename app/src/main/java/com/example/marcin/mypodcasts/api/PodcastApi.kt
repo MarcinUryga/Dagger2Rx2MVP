@@ -2,6 +2,7 @@ package com.example.marcin.mypodcasts.api
 
 import com.example.marcin.mypodcasts.model.RegisterRequest
 import com.example.marcin.mypodcasts.model.UserResponse
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import retrofit2.http.Body
 import retrofit2.http.POST
