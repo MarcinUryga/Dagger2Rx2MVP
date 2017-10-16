@@ -33,7 +33,7 @@ class RegisterPresenter @Inject constructor(
     view.hideKeyboard()
 
     validateRegisterInput(RegisterRequest(
-        username = "${name}_${surname}",
+        username = email,
         firstName = name,
         lastName = surname,
         email = email,

@@ -23,11 +23,17 @@ interface LoginContract {
         fun showEmailError()
 
         fun showPasswordError()
+
+        fun showProgressBar()
+
+        fun hideProgressBar()
+
+        fun showError(msg: String)
     }
 
     interface Presenter : MvpPresenter {
 
-        fun onLoginClicked()
+        fun onLoginClicked(email: String, password: String)
 
         fun onRegisterClicked()
     }

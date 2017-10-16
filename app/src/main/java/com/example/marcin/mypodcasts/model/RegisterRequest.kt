@@ -5,9 +5,9 @@ package com.example.marcin.mypodcasts.model
  */
 data class RegisterRequest(
 
-        val username: String,
-        val email: String,
-        val firstName: String,
-        val lastName: String,
-        val password: String
+    val username: String = "",
+    val email: String = "",
+    val firstName: String = "",
+    val lastName: String = "",
+    val password: String = ""
 )

@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.example.marcin.mypodcasts.PodcastApplication
 import com.example.marcin.mypodcasts.api.PodcastApi
-import com.example.marcin.mypodcasts.ui.register.RegisterActivity
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient

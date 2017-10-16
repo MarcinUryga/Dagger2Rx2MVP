@@ -20,7 +20,7 @@ class MainActivity : BaseActivity<MainContract.Presenter>(), MainContract.View {
   }
 
   override fun setTestText(text: String) {
-    testText.text = text
+
   }
 
   companion object {

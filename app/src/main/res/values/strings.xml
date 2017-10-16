@@ -15,4 +15,7 @@
     <string name="ok">OK</string>
     <string name="login">Login</string>
     <string name="wrong_password">Wrong password!</string>
+    <string name="menu_search">search</string>
+    <string name="menu_settings">settings</string>
+    <string name="menu_navigation">navigation</string>
 </resources>
