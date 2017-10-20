@@ -18,9 +18,9 @@ public abstract class LoginModule {
 
     @Binds
     public abstract LoginContract.Presenter bindPresenter(LoginPresenter presenter);
-
-    @Provides
-    public static UserLoginUseCase provideUserLoginUseCase(LoginActivity loginActivity, PodcastApi podcastApi) {
-        return new UserLoginUseCase(podcastApi);
-    }
+//
+//    @Provides
+//    public static UserLoginUseCase provideUserLoginUseCase(LoginActivity loginActivity, PodcastApi podcastApi) {
+//        return new UserLoginUseCase(podcastApi);
+//    }
 }

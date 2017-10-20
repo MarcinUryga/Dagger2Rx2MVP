@@ -12,13 +12,12 @@ import javax.inject.Inject
 
 @ScreenScope
 class MainPresenter @Inject constructor(
-    private val sharedPreferences: SharedPreferences
+    sharedPreferences: SharedPreferences
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
-
   private val userStorage = UserStorage(sharedPreferences)
 
-  override fun onViewCreated() {
-    super.onViewCreated()
-    view.setTestText(userStorage.getEmail())
+  override fun logoutUser() {
+    userStorage.clearUserStorage()
+    view.openLoginActivity(userStorage)
   }
 }

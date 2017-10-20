@@ -6,6 +6,8 @@ import com.example.marcin.mypodcasts.ui.main.MainActivity
 import com.example.marcin.mypodcasts.ui.main.MainModule
 import com.example.marcin.mypodcasts.ui.register.RegisterActivity
 import com.example.marcin.mypodcasts.ui.register.RegisterModule
+import com.example.marcin.mypodcasts.ui.search_podcasts.SearchPodcastsFragment
+import com.example.marcin.mypodcasts.ui.search_podcasts.SearchPodcastsModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -27,4 +29,8 @@ abstract class InjectorsModule {
   @ScreenScope
   @ContributesAndroidInjector(modules = arrayOf(MainModule::class))
   abstract fun mainActivity(): MainActivity
+
+  @ScreenScope
+  @ContributesAndroidInjector(modules = arrayOf(SearchPodcastsModule::class))
+  abstract fun searchPodcastsFragment(): SearchPodcastsFragment
 }

@@ -18,4 +18,9 @@
     <string name="menu_search">search</string>
     <string name="menu_settings">settings</string>
     <string name="menu_navigation">navigation</string>
+    <string name="my_podcasts">My Podcasts</string>
+    <string name="no_podcasts_to_show_check_internet">No podcasts to show.\nCheck your internet connection.</string>
+    <string name="no_podcasts_to_show_search">No podcasts to show.\nYou can add some podcasts from podcasts searcher.</string>
+    <string name="logout">Logout</string>
+    <string name="number_of_episodes">$1%d episodes</string>
 </resources>
