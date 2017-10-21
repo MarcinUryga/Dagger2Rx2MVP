@@ -36,4 +36,9 @@ abstract class BaseFragment<P : MvpPresenter> : Fragment() {
     super.onStop()
     presenter.stop()
   }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    presenter.destroy()
+  }
 }

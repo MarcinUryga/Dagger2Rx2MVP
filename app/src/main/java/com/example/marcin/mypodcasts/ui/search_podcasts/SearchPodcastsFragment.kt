@@ -53,7 +53,9 @@ class SearchPodcastsFragment : BaseFragment<SearchPodcastsContract.Presenter>(),
   }
 
   override fun hideProgressBar() {
-    progressBar.visibility = View.INVISIBLE
+    if (progressBar != null) {
+      progressBar.visibility = View.INVISIBLE
+    }
   }
 
   override fun startPodcastDetailsActivity() {
