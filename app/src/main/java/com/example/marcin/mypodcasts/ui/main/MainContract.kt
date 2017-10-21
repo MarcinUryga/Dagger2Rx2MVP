@@ -1,6 +1,6 @@
 package com.example.marcin.mypodcasts.ui.main
 
-import com.example.marcin.mypodcasts.model.UserStorage
+import com.example.marcin.mypodcasts.storage.UserStorage
 import com.example.marcin.mypodcasts.mvp.MvpPresenter
 import com.example.marcin.mypodcasts.mvp.MvpView
 

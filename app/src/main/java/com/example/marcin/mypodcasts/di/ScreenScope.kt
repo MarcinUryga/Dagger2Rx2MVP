@@ -1,5 +1,6 @@
 package com.example.marcin.mypodcasts.di
 
+import javax.inject.Qualifier
 import javax.inject.Scope
 
 /**
@@ -9,3 +10,11 @@ import javax.inject.Scope
 @Scope
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ScreenScope
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ApplicationContext
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class DatabaseInfo

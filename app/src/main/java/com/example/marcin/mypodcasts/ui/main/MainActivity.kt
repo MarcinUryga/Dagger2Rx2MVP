@@ -8,7 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.example.marcin.mypodcasts.R
-import com.example.marcin.mypodcasts.model.UserStorage
+import com.example.marcin.mypodcasts.storage.UserStorage
 import com.example.marcin.mypodcasts.mvp.BaseActivity
 import com.example.marcin.mypodcasts.ui.login.LoginActivity
 import com.example.marcin.mypodcasts.ui.my_podcasts.MyPodcastsFragment

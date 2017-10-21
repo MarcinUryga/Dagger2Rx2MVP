@@ -3,7 +3,7 @@ package com.example.marcin.mypodcasts.ui.login
 import android.content.SharedPreferences
 import com.example.marcin.mypodcasts.di.ScreenScope
 import com.example.marcin.mypodcasts.model.RegisterRequest
-import com.example.marcin.mypodcasts.model.UserStorage
+import com.example.marcin.mypodcasts.storage.UserStorage
 import com.example.marcin.mypodcasts.mvp.BasePresenter
 import com.example.marcin.mypodcasts.ui.login.LoginContract.Presenter
 import io.reactivex.android.schedulers.AndroidSchedulers

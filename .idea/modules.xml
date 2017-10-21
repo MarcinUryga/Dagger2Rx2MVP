@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Dagger2Rx2MVP.iml" filepath="$PROJECT_DIR$/Dagger2Rx2MVP.iml" />
+      <module fileurl="file://C:\Users\marci\Desktop\Dagger2Rx2MVP\Dagger2Rx2MVP.iml" filepath="C:\Users\marci\Desktop\Dagger2Rx2MVP\Dagger2Rx2MVP.iml" />
       <module fileurl="file://C:\Users\marci\StudioProjects\Dagger2Rx2MVP\MyPodcasts.iml" filepath="C:\Users\marci\StudioProjects\Dagger2Rx2MVP\MyPodcasts.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

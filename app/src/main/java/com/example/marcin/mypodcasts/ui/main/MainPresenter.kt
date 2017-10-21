@@ -2,7 +2,7 @@ package com.example.marcin.mypodcasts.ui.main
 
 import android.content.SharedPreferences
 import com.example.marcin.mypodcasts.di.ScreenScope
-import com.example.marcin.mypodcasts.model.UserStorage
+import com.example.marcin.mypodcasts.storage.UserStorage
 import com.example.marcin.mypodcasts.mvp.BasePresenter
 import javax.inject.Inject
 

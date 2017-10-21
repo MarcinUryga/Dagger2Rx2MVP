@@ -14,6 +14,7 @@ abstract class BaseActivity<P : MvpPresenter> : AppCompatActivity() {
 
     @Inject lateinit var presenter: P
     //fragmentInjector
+    var progressDialog: ProgressDialog? = null
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
@@ -43,6 +44,20 @@ abstract class BaseActivity<P : MvpPresenter> : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         presenter.destroy()
+    }
+
+    protected fun showProgressDialog() {
+        if (progressDialog == null) {
+            val progressDialog1 = ProgressDialog(baseContext)
+            progressDialog1.show()
+        }
+    }
+
+    protected fun hideProgressDialog() {
+        if (progressDialog != null && progressDialog.let { it!!.isShowing }) {
+            progressDialog?.hide()
+            progressDialog = null
+        }
     }
 
     protected fun showErrorDialog(errorMsg: String?) {

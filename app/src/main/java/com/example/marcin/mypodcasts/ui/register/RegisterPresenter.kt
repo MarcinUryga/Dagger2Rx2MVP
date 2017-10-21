@@ -4,12 +4,11 @@ import android.content.SharedPreferences
 import com.example.marcin.mypodcasts.di.ScreenScope
 import com.example.marcin.mypodcasts.model.RegisterRequest
 import com.example.marcin.mypodcasts.model.UserResponse
-import com.example.marcin.mypodcasts.model.UserStorage
+import com.example.marcin.mypodcasts.storage.UserStorage
 import com.example.marcin.mypodcasts.mvp.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**

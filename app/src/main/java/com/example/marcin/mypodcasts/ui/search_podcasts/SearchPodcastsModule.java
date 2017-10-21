@@ -1,7 +1,5 @@
 package com.example.marcin.mypodcasts.ui.search_podcasts;
 
-import com.example.marcin.mypodcasts.ui.main.MainContract;
-
 import dagger.Binds;
 import dagger.Module;
 

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.example.marcin.mypodcasts.PodcastApplication
 import com.example.marcin.mypodcasts.api.PodcastApi
+import com.squareup.otto.Bus
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -11,6 +12,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 /**
  * Created by MARCIN on 2017-10-14.
@@ -54,5 +56,9 @@ class ApplicationModule {
 
   @Provides
   fun providePodcastApi(retrofit: Retrofit) = retrofit.create(PodcastApi::class.java)
+
+  @Singleton
+  @Provides
+  fun provideBus() = Bus()
 }
 

@@ -1,6 +1,7 @@
-package com.example.marcin.mypodcasts.model
+package com.example.marcin.mypodcasts.storage
 
 import android.content.SharedPreferences
+import com.example.marcin.mypodcasts.model.UserResponse
 
 /**
  * Created by marci on 2017-10-15.

@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import com.example.marcin.mypodcasts.R
 import com.example.marcin.mypodcasts.model.Podcast
 import com.example.marcin.mypodcasts.mvp.BaseFragment
+import com.example.marcin.mypodcasts.ui.podcast_details.PodcastDetailsActivity
 import com.example.marcin.mypodcasts.ui.search_podcasts.adapter.PodcastAdapter
+import com.squareup.otto.Bus
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.empty_podcasts_view.*
 import kotlinx.android.synthetic.main.search_podcasts_fragment.*
@@ -32,8 +34,8 @@ class SearchPodcastsFragment : BaseFragment<SearchPodcastsContract.Presenter>(),
     presenter.loadPodcasts()
   }
 
-  override fun showPodcasts(podcastsList: List<Podcast>) {
-    podcastAdapter = PodcastAdapter(podcastsList)
+  override fun showPodcasts(podcastsList: List<Podcast>, bus: Bus) {
+    podcastAdapter = PodcastAdapter(podcastsList, bus)
     recyclerView.layoutManager = LinearLayoutManager(activity.baseContext)
     recyclerView.adapter = podcastAdapter
     emptyPodcastsView.visibility = View.INVISIBLE
@@ -45,6 +47,19 @@ class SearchPodcastsFragment : BaseFragment<SearchPodcastsContract.Presenter>(),
     emptyPodcastsView.visibility = View.VISIBLE
     recyclerView.visibility = View.INVISIBLE
   }
+
+  override fun showProgressBar() {
+    progressBar.visibility = View.VISIBLE
+  }
+
+  override fun hideProgressBar() {
+    progressBar.visibility = View.INVISIBLE
+  }
+
+  override fun startPodcastDetailsActivity() {
+    startActivity(PodcastDetailsActivity.newIntent(activity.baseContext))
+  }
+
 
   private fun showAlertDialog(msg: String) {
     AlertDialog.Builder(activity.baseContext)
