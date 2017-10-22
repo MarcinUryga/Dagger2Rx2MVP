@@ -10,6 +10,7 @@ import com.example.marcin.mypodcasts.di.ApplicationContext
 import com.example.marcin.mypodcasts.di.DatabaseInfo
 import com.example.marcin.mypodcasts.model.Podcast
 import java.sql.SQLException
+import javax.inject.Inject
 import javax.inject.Singleton
 
 
@@ -18,7 +19,7 @@ import javax.inject.Singleton
  */
 
 @Singleton
-class DbHelper(
+class DbHelper @Inject constructor(
     @ApplicationContext context: Context,
     @DatabaseInfo dbName: String,
     @DatabaseInfo version: Int
@@ -51,7 +52,7 @@ class DbHelper(
   }
 
   @Throws(Resources.NotFoundException::class, NullPointerException::class)
-  protected fun getPodcast(podcastId: Long): Podcast {
+  fun getPodcast(podcastId: Long): Podcast {
     var cursor: Cursor? = null
     try {
       val db = this.readableDatabase
@@ -87,7 +88,7 @@ class DbHelper(
   }
 
   @Throws(Exception::class)
-  protected fun insertPodcast(podcast: Podcast): Long? {
+  fun insertPodcast(podcast: Podcast): Long? {
     try {
       val db = this.writableDatabase
       val contentValues = ContentValues()

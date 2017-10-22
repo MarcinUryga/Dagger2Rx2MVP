@@ -1,5 +1,6 @@
 package com.example.marcin.mypodcasts.di
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.example.marcin.mypodcasts.PodcastApplication
@@ -13,6 +14,9 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+import android.app.Application
+
+
 
 /**
  * Created by MARCIN on 2017-10-14.
@@ -23,6 +27,29 @@ class ApplicationModule {
 
   companion object {
     private val baseUrl = "https://parseapi.back4app.com/"
+  }
+
+  @Provides
+  @ApplicationContext
+  fun provideContext(podcastApplication: PodcastApplication): Context {
+    return podcastApplication
+  }
+
+  @Provides
+  fun provideApplication(podcastApplication: PodcastApplication): Application {
+    return podcastApplication
+  }
+
+  @Provides
+  @DatabaseInfo
+  fun provideDatabaseName(): String {
+    return "podcast-database.db"
+  }
+
+  @Provides
+  @DatabaseInfo
+  fun provideDatabaseVersion(): Int{
+    return 2
   }
 
   @Provides
