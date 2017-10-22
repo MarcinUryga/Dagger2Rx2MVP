@@ -1,7 +1,7 @@
 package com.example.marcin.mypodcasts.ui.search_podcasts
 
 import com.example.marcin.mypodcasts.api.PodcastApi
-import com.example.marcin.mypodcasts.model.PodcastResponse
+import com.example.marcin.mypodcasts.model.PodcastsResponse
 import io.reactivex.Observable
 import javax.inject.Inject
 
@@ -12,7 +12,7 @@ class GetPodcastsUseCase @Inject constructor(
     private val podcastApi: PodcastApi
 ) {
 
-  fun get(): Observable<PodcastResponse> {
+  fun get(): Observable<PodcastsResponse> {
     return podcastApi.getPodcasts()
   }
 }

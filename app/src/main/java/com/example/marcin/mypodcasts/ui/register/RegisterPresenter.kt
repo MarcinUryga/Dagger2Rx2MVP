@@ -4,8 +4,10 @@ import android.content.SharedPreferences
 import com.example.marcin.mypodcasts.di.ScreenScope
 import com.example.marcin.mypodcasts.model.RegisterRequest
 import com.example.marcin.mypodcasts.model.UserResponse
-import com.example.marcin.mypodcasts.storage.UserStorage
 import com.example.marcin.mypodcasts.mvp.BasePresenter
+import com.example.marcin.mypodcasts.storage.DataManager
+import com.example.marcin.mypodcasts.storage.User
+import com.example.marcin.mypodcasts.storage.UserSharedPref
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -18,10 +20,11 @@ import javax.inject.Inject
 @ScreenScope
 class RegisterPresenter @Inject constructor(
     private val userRegisterUseCase: UserRegisterUseCase,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val dataManager: DataManager
 ) : BasePresenter<RegisterContract.View>(), RegisterContract.Presenter {
 
-  private val userStorage = UserStorage(sharedPreferences)
+  private val userSharedPref = UserSharedPref(sharedPreferences)
 
   override fun onRegisterClicked(
       name: String,
@@ -67,16 +70,7 @@ class RegisterPresenter @Inject constructor(
         .doOnSubscribe { view.showProgressBar() }
         .doFinally { view.hideProgressBar() }
         .subscribe({ response ->
-          userStorage.saveToStorage(
-              UserResponse(
-                  username = registerRequest.username,
-                  objectId = response.objectId,
-                  firstName = registerRequest.firstName,
-                  email = registerRequest.email,
-                  lastName = registerRequest.lastName,
-                  sessionToken = response.sessionToken
-              )
-          )
+          storageData(response, registerRequest)
           view.startMainActivity()
         }, { error ->
           Timber.d(error.localizedMessage)
@@ -84,4 +78,16 @@ class RegisterPresenter @Inject constructor(
     disposables?.add(disposable)
   }
 
+  private fun storageData(response: UserResponse, request: RegisterRequest) {
+    dataManager.createUser(
+        User(
+            id = response.objectId,
+            sessionToken = response.sessionToken,
+            firstName = request.firstName,
+            lastName = request.lastName,
+            username = request.username,
+            email = request.email
+        ))
+    userSharedPref.saveSessionToken(response.objectId)
+  }
 }

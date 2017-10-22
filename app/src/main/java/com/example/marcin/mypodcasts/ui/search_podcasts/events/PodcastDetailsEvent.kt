@@ -1,4 +1,4 @@
-package com.example.marcin.mypodcasts.ui.search_podcasts
+package com.example.marcin.mypodcasts.ui.search_podcasts.events
 
 import com.example.marcin.mypodcasts.model.Podcast
 

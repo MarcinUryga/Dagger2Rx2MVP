@@ -2,8 +2,9 @@ package com.example.marcin.mypodcasts.ui.main
 
 import android.content.SharedPreferences
 import com.example.marcin.mypodcasts.di.ScreenScope
-import com.example.marcin.mypodcasts.storage.UserStorage
 import com.example.marcin.mypodcasts.mvp.BasePresenter
+import com.example.marcin.mypodcasts.storage.DataManager
+import com.example.marcin.mypodcasts.storage.UserSharedPref
 import javax.inject.Inject
 
 /**
@@ -12,12 +13,19 @@ import javax.inject.Inject
 
 @ScreenScope
 class MainPresenter @Inject constructor(
-    sharedPreferences: SharedPreferences
+    sharedPreferences: SharedPreferences,
+    private val dataManager: DataManager
+
 ) : BasePresenter<MainContract.View>(), MainContract.Presenter {
-  private val userStorage = UserStorage(sharedPreferences)
+  private val userStorage = UserSharedPref(sharedPreferences)
 
   override fun logoutUser() {
-    userStorage.clearUserStorage()
+    clearStorage()
     view.openLoginActivity(userStorage)
+  }
+
+  private fun clearStorage() {
+    dataManager.deleteUser(userStorage.getUserId())
+    userStorage.clearUserSharedPref()
   }
 }

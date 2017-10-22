@@ -3,8 +3,11 @@ package com.example.marcin.mypodcasts.ui.login
 import android.content.SharedPreferences
 import com.example.marcin.mypodcasts.di.ScreenScope
 import com.example.marcin.mypodcasts.model.RegisterRequest
-import com.example.marcin.mypodcasts.storage.UserStorage
+import com.example.marcin.mypodcasts.model.UserResponse
 import com.example.marcin.mypodcasts.mvp.BasePresenter
+import com.example.marcin.mypodcasts.storage.DataManager
+import com.example.marcin.mypodcasts.storage.User
+import com.example.marcin.mypodcasts.storage.UserSharedPref
 import com.example.marcin.mypodcasts.ui.login.LoginContract.Presenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -18,14 +21,15 @@ import javax.inject.Inject
 @ScreenScope
 class LoginPresenter @Inject constructor(
     private val userLoginUseCase: UserLoginUseCase,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val dataManager: DataManager
 ) : BasePresenter<LoginContract.View>(), Presenter {
 
-  private val userStorage = UserStorage(sharedPreferences)
+  private val userSharedPref = UserSharedPref(sharedPreferences)
 
   override fun onViewCreated() {
     super.onViewCreated()
-    if (userStorage.logged()) {
+    if (userSharedPref.logged()) {
       view.startMainMenuActivity()
     }
   }
@@ -61,7 +65,7 @@ class LoginPresenter @Inject constructor(
         .doFinally { view.hideProgressBar() }
         .subscribe({ response ->
           Timber.d(response.toString())
-          userStorage.saveToStorage(response)
+          storageData(response)
           view.startMainMenuActivity()
         }, { error ->
           view.showError("Wrong email/password")
@@ -69,5 +73,18 @@ class LoginPresenter @Inject constructor(
     disposables?.add(disposable)
 
 
+  }
+
+  private fun storageData(response: UserResponse) {
+    dataManager.createUser(
+        User(
+            id = response.objectId,
+            sessionToken = response.sessionToken,
+            firstName = response.firstName,
+            lastName = response.lastName,
+            username = response.username,
+            email = response.email
+        ))
+    userSharedPref.saveSessionToken(response.objectId)
   }
 }

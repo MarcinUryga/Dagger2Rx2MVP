@@ -8,8 +8,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.example.marcin.mypodcasts.R
-import com.example.marcin.mypodcasts.storage.UserStorage
 import com.example.marcin.mypodcasts.mvp.BaseActivity
+import com.example.marcin.mypodcasts.storage.UserSharedPref
 import com.example.marcin.mypodcasts.ui.login.LoginActivity
 import com.example.marcin.mypodcasts.ui.my_podcasts.MyPodcastsFragment
 import com.example.marcin.mypodcasts.ui.search_podcasts.SearchPodcastsFragment
@@ -55,8 +55,8 @@ class MainActivity : BaseActivity<MainContract.Presenter>(), MainContract.View {
     return super.onCreateOptionsMenu(menu)
   }
 
-  override fun openLoginActivity(userStorage: UserStorage) {
-    Toast.makeText(baseContext, "${userStorage.logged()}  sdad ${userStorage.getEmail()}", Toast.LENGTH_SHORT).show()
+  override fun openLoginActivity(userSharedPref: UserSharedPref) {
+    Toast.makeText(baseContext, "${userSharedPref.logged()}  sdad ${userSharedPref.getUserId()}", Toast.LENGTH_SHORT).show()
     startActivity(LoginActivity.newIntent(this))
   }
 

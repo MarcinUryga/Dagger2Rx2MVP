@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.marcin.mypodcasts.R
 import com.example.marcin.mypodcasts.model.Podcast
-import com.example.marcin.mypodcasts.ui.search_podcasts.PodcastDetailsEvent
+import com.example.marcin.mypodcasts.ui.search_podcasts.events.AddPodcastEvent
+import com.example.marcin.mypodcasts.ui.search_podcasts.events.PodcastDetailsEvent
 import com.squareup.otto.Bus
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.podcast_item.view.*
@@ -29,6 +30,10 @@ class PodcastAdapter(
       Toast.makeText(it.context, "${podcast.title}  ${podcast.podcastId}", Toast.LENGTH_SHORT).show()
       bus.post(PodcastDetailsEvent(podcast))
     }
+    holder.itemView.addButton.setOnClickListener(View.OnClickListener {
+      bus.post(AddPodcastEvent(podcast))
+    })
+
   }
 
   override fun getItemCount() = podcastsList.size

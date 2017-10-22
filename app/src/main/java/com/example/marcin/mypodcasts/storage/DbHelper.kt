@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.marcin.mypodcasts.di.ApplicationContext
 import com.example.marcin.mypodcasts.di.DatabaseInfo
-import com.example.marcin.mypodcasts.model.Podcast
 import java.sql.SQLException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,7 +28,7 @@ class DbHelper @Inject constructor(
   }
 
   override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-    db.execSQL("DROP TABLE IF EXISTS " + PODCAST_TABLE_NAME)
+    db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME)
     onCreate(db)
   }
 
@@ -37,13 +36,13 @@ class DbHelper @Inject constructor(
     try {
       db.execSQL(
           "CREATE TABLE IF NOT EXISTS "
-              + PODCAST_TABLE_NAME + "("
-              + PODCAST_COLUMN_PODCAST_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-              + PODCAST_COLUMN_PODCAST_TITLE + " VARCHAR(20), "
-              + PODCAST_COLUMN_PODCAST_DESCRIPTION + " VARCHAR(100),"
-              + PODCAST_COLUMN_NUMBER_OF_EPISODES + " INTEGER,"
-              + PODCAST_COLUMN_PODCAST_FULL_URL + " VARCHAR(100),"
-              + PODCAST_COLUMN_PODCAST_THUMB_URL + " VARCHAR(100)" +
+              + TABLE_NAME + "("
+              + USER_ID + " VARCHAR(20), "
+              + SURNAME + " VARCHAR(20), "
+              + EMAIL + " VARCHAR(50),"
+              + NAME + " VARCHAR(50),"
+              + USERNAME + " VARCHAR(50),"
+              + SESSION_TOKEN + " VARCHAR(50)" +
               ")"
       )
     } catch (e: SQLException) {
@@ -51,32 +50,50 @@ class DbHelper @Inject constructor(
     }
   }
 
+  @Throws(Exception::class)
+  fun insertUser(user: User): Long? {
+    try {
+      val db = this.writableDatabase
+      val contentValues = ContentValues()
+      contentValues.put(USER_ID, user.id)
+      contentValues.put(SESSION_TOKEN, user.sessionToken)
+      contentValues.put(NAME, user.firstName)
+      contentValues.put(SURNAME, user.lastName)
+      contentValues.put(USERNAME, user.username)
+      contentValues.put(EMAIL, user.email)
+      return db.insert(TABLE_NAME, null, contentValues)
+    } catch (e: Exception) {
+      e.printStackTrace()
+      throw e
+    }
+  }
+
   @Throws(Resources.NotFoundException::class, NullPointerException::class)
-  fun getPodcast(podcastId: Long): Podcast {
+  fun getUser(objecId: String): User {
     var cursor: Cursor? = null
     try {
       val db = this.readableDatabase
       cursor = db.rawQuery(
           "SELECT * FROM "
-              + PODCAST_TABLE_NAME
+              + TABLE_NAME
               + " WHERE "
-              + PODCAST_COLUMN_PODCAST_ID
+              + USER_ID
               + " = ? ",
-          arrayOf((podcastId).toString() + ""))
+          arrayOf((objecId) + ""))
 
       if (cursor!!.getCount() > 0) {
         cursor.moveToFirst()
-        return Podcast(
-            podcastId = cursor.getLong(cursor.getColumnIndex(PODCAST_COLUMN_PODCAST_ID)),
-            numberOfEpisodes = cursor.getInt(cursor.getColumnIndex(PODCAST_COLUMN_NUMBER_OF_EPISODES)),
-            title = cursor.getString(cursor.getColumnIndex(PODCAST_COLUMN_PODCAST_TITLE)),
-            description = cursor.getString(cursor.getColumnIndex(PODCAST_COLUMN_PODCAST_DESCRIPTION)),
-            fullUrl = cursor.getString(cursor.getColumnIndex(PODCAST_COLUMN_PODCAST_FULL_URL)),
-            thumbUrl = cursor.getString(cursor.getColumnIndex(PODCAST_COLUMN_PODCAST_THUMB_URL))
+        return User(
+            id = cursor.getString(cursor.getColumnIndex(USER_ID)),
+            firstName = cursor.getString(cursor.getColumnIndex(NAME)),
+            lastName = cursor.getString(cursor.getColumnIndex(SURNAME)),
+            username = cursor.getString(cursor.getColumnIndex(USERNAME)),
+            sessionToken = cursor.getString(cursor.getColumnIndex(SESSION_TOKEN)),
+            email = cursor.getString(cursor.getColumnIndex(EMAIL))
         )
 
       } else {
-        throw Resources.NotFoundException("User with id $podcastId does not exists")
+        throw Resources.NotFoundException("User with id $objecId does not exists")
       }
     } catch (e: NullPointerException) {
       e.printStackTrace()
@@ -87,30 +104,22 @@ class DbHelper @Inject constructor(
     }
   }
 
-  @Throws(Exception::class)
-  fun insertPodcast(podcast: Podcast): Long? {
-    try {
-      val db = this.writableDatabase
-      val contentValues = ContentValues()
-      contentValues.put(PODCAST_COLUMN_PODCAST_TITLE, podcast.title)
-      contentValues.put(PODCAST_COLUMN_NUMBER_OF_EPISODES, podcast.numberOfEpisodes)
-      contentValues.put(PODCAST_COLUMN_PODCAST_DESCRIPTION, podcast.description)
-      contentValues.put(PODCAST_COLUMN_PODCAST_FULL_URL, podcast.fullUrl)
-      contentValues.put(PODCAST_COLUMN_PODCAST_THUMB_URL, podcast.thumbUrl)
-      return db.insert(PODCAST_TABLE_NAME, null, contentValues)
-    } catch (e: Exception) {
-      e.printStackTrace()
-      throw e
-    }
+  fun deleteUser(objecId: String) {
+    this.writableDatabase
+        .delete(
+            TABLE_NAME,
+            "$USER_ID='$objecId'",
+            null
+        )
   }
 
   companion object {
-    const val PODCAST_TABLE_NAME = "podcasts"
-    const val PODCAST_COLUMN_PODCAST_ID = "id"
-    const val PODCAST_COLUMN_NUMBER_OF_EPISODES = "number_of_episodes"
-    const val PODCAST_COLUMN_PODCAST_TITLE = "podcast_title"
-    const val PODCAST_COLUMN_PODCAST_DESCRIPTION = "podcast_description"
-    const val PODCAST_COLUMN_PODCAST_FULL_URL = "podcast_full_url"
-    const val PODCAST_COLUMN_PODCAST_THUMB_URL = "podcast_thumb_url"
+    const val TABLE_NAME = "user"
+    const val USER_ID = "id"
+    const val SESSION_TOKEN = "session_token"
+    const val NAME = "name"
+    const val SURNAME = "surname"
+    const val USERNAME = "username"
+    const val EMAIL = "podcast_description"
   }
 }

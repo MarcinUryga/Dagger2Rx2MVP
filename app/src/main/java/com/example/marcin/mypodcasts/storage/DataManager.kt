@@ -3,7 +3,6 @@ package com.example.marcin.mypodcasts.storage
 import android.content.Context
 import android.content.res.Resources
 import com.example.marcin.mypodcasts.di.ApplicationContext
-import com.example.marcin.mypodcasts.model.Podcast
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,12 +16,16 @@ class DataManager @Inject constructor(
     private val dbHelper: DbHelper) {
 
   @Throws(Exception::class)
-  fun createPodcast(podcast: Podcast): Long? {
-    return dbHelper.insertPodcast(podcast)
+  fun createUser(user: User): Long? {
+    return dbHelper.insertUser(user)
   }
 
   @Throws(Resources.NotFoundException::class, NullPointerException::class)
-  fun getPodcast(podcastId: Long): Podcast {
-    return dbHelper.getPodcast(podcastId)
+  fun getUser(userId: String): User {
+    return dbHelper.getUser(userId)
+  }
+
+  fun deleteUser(userId: String) {
+    dbHelper.deleteUser(userId)
   }
 }

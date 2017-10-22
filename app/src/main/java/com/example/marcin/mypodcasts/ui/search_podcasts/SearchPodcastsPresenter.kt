@@ -1,9 +1,16 @@
 package com.example.marcin.mypodcasts.ui.search_podcasts
 
+import android.content.SharedPreferences
 import com.example.marcin.mypodcasts.di.ScreenScope
 import com.example.marcin.mypodcasts.model.Podcast
+import com.example.marcin.mypodcasts.model.Subscription
 import com.example.marcin.mypodcasts.mvp.BasePresenter
 import com.example.marcin.mypodcasts.storage.DataManager
+import com.example.marcin.mypodcasts.storage.UserSharedPref
+import com.example.marcin.mypodcasts.ui.search_podcasts.events.AddPodcastEvent
+import com.example.marcin.mypodcasts.ui.search_podcasts.events.PodcastDetailsEvent
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,24 +25,17 @@ import javax.inject.Inject
 @ScreenScope
 class SearchPodcastsPresenter @Inject constructor(
     private val getPodcastsUseCase: GetPodcastsUseCase,
-    private val bus: Bus,
-    private val dataManager: DataManager
+    private val postPodcastUseCase: PostPodcastUseCase,
+    private val sharedPreferences: SharedPreferences,
+    private val dataManager: DataManager,
+    private val bus: Bus
 ) : BasePresenter<SearchPodcastsContract.View>(), SearchPodcastsContract.Presenter {
+
+  private val userSharedPref = UserSharedPref(sharedPreferences)
 
   override fun onViewCreated() {
     super.onViewCreated()
     bus.register(this)
-    dataManager.createPodcast(Podcast(
-        podcastId = 1L,
-        numberOfEpisodes = 4,
-        title = "title",
-        description = "description",
-        fullUrl = "fullUrl",
-        thumbUrl = "thumbUrl"
-    ))
-    val podcast = dataManager.getPodcast(1L)
-
-    Timber.d(podcast.toString())
   }
 
   override fun loadPodcasts() {
@@ -53,8 +53,30 @@ class SearchPodcastsPresenter @Inject constructor(
   }
 
   @Subscribe
-  public fun onPodcastDetailsEvent(event: PodcastDetailsEvent) {
+  fun onPodcastDetailsEvent(event: PodcastDetailsEvent) {
     Timber.d("${event.podcast.podcastId} dffssdfsdf")
+  }
+
+  @Subscribe
+  fun onAddPodcastEvent(event: AddPodcastEvent) {
+    val user = dataManager.getUser(userSharedPref.getUserId())
+    val disposable = postPodcastUseCase
+        .post(
+            createSubscription(
+                podcast = event.podcast,
+                userId = user.id
+            ),
+            sessionToken = user.sessionToken
+        )
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({ response ->
+          Timber.d("Added: ${response.toString()}")
+        }, { error ->
+          Timber.d(error.localizedMessage)
+        })
+    disposables?.add(disposable)
+
   }
 
   private fun handleResponse(androidList: List<Podcast>) {
@@ -62,4 +84,14 @@ class SearchPodcastsPresenter @Inject constructor(
     Timber.d("${androidList.size}")
   }
 
+  private fun createSubscription(podcast: Podcast, userId: String): Subscription {
+    val aclJson = JsonObject()
+    aclJson.add("read", JsonPrimitive(true))
+    aclJson.add("write", JsonPrimitive(true))
+    return Subscription(
+        userId =userId,
+        podcastId = podcast.podcastId,
+        acl = aclJson
+    )
+  }
 }
