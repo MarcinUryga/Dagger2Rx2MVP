@@ -1,4 +1,4 @@
-package com.example.marcin.mypodcasts.storage
+package com.example.marcin.mypodcasts.model
 
 /**
  * Created by marci on 2017-10-22.

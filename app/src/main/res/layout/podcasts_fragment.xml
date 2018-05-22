@@ -9,7 +9,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/podcast_item" />
+        tools:listitem="@layout/subscribed_podcast_item" />
 
     <include
         android:id="@+id/emptyPodcastsView"

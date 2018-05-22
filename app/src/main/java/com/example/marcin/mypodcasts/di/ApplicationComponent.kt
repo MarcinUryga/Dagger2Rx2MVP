@@ -12,12 +12,13 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = arrayOf(
-        AndroidSupportInjectionModule::class,
-        InjectorsModule::class,
-        ApplicationModule::class
+    AndroidSupportInjectionModule::class,
+    InjectorsModule::class,
+    ApplicationModule::class,
+    PicassoModule::class
 ))
 interface ApplicationComponent : AndroidInjector<PodcastApplication> {
 
-    @Component.Builder
-    abstract class Builder : AndroidInjector.Builder<PodcastApplication>()
+  @Component.Builder
+  abstract class Builder : AndroidInjector.Builder<PodcastApplication>()
 }

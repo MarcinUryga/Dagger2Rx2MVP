@@ -2,18 +2,23 @@ package com.example.marcin.mypodcasts.mvp
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import com.example.marcin.mypodcasts.R
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
 /**
  * Created by MARCIN on 2017-10-14.
  */
-abstract class BaseActivity<P : MvpPresenter> : AppCompatActivity() {
+abstract class BaseActivity<P : MvpPresenter> : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject lateinit var presenter: P
-    //fragmentInjector
+    @Inject lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
+
     var progressDialog: ProgressDialog? = null
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -67,4 +72,6 @@ abstract class BaseActivity<P : MvpPresenter> : AppCompatActivity() {
                 .setPositiveButton(getString(R.string.ok), null)
                 .show()
     }
+
+    override fun supportFragmentInjector() = supportFragmentInjector
 }

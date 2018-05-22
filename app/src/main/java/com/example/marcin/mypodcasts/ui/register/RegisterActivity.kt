@@ -8,8 +8,7 @@ import android.view.View
 import com.example.marcin.mypodcasts.R
 import com.example.marcin.mypodcasts.common.KeyboardUtils
 import com.example.marcin.mypodcasts.mvp.BaseActivity
-import com.example.marcin.mypodcasts.ui.login.LoginActivity
-import com.example.marcin.mypodcasts.ui.main.MainActivity
+import com.example.marcin.mypodcasts.ui.launch.LaunchActivity
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.register_layout.*
 
@@ -45,7 +44,7 @@ class RegisterActivity : BaseActivity<RegisterContract.Presenter>(), RegisterCon
   }
 
   override fun startMainActivity() {
-    startActivity(MainActivity.newIntent(this))
+    startActivity(LaunchActivity.newIntent(this))
   }
 
   override fun hideKeyboard() {

@@ -8,6 +8,7 @@ import android.view.View
 import com.example.marcin.mypodcasts.R
 import com.example.marcin.mypodcasts.common.KeyboardUtils
 import com.example.marcin.mypodcasts.mvp.BaseActivity
+import com.example.marcin.mypodcasts.ui.launch.LaunchActivity
 import com.example.marcin.mypodcasts.ui.main.MainActivity
 import com.example.marcin.mypodcasts.ui.register.RegisterActivity
 import dagger.android.AndroidInjection
@@ -33,7 +34,7 @@ class LoginActivity : BaseActivity<LoginContract.Presenter>(), LoginContract.Vie
   }
 
   override fun startMainMenuActivity() {
-    startActivity(MainActivity.newIntent(this))
+    startActivity(LaunchActivity.newIntent(this))
   }
 
   override fun startRegisterActivity() {

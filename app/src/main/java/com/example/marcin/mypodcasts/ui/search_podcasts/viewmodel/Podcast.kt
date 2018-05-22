@@ -9,5 +9,6 @@ data class Podcast(
     val numberOfEpisodes: Int,
     val description: String,
     val fullUrl: String,
-    val thumbUrl: String
+    val thumbUrl: String,
+    var isSubscribed: Boolean
 )

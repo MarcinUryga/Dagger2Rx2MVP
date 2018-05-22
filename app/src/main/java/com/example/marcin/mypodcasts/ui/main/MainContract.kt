@@ -1,6 +1,5 @@
 package com.example.marcin.mypodcasts.ui.main
 
-import com.example.marcin.mypodcasts.storage.UserSharedPref
 import com.example.marcin.mypodcasts.mvp.MvpPresenter
 import com.example.marcin.mypodcasts.mvp.MvpView
 
@@ -11,7 +10,7 @@ interface MainContract {
 
   interface View : MvpView {
 
-    fun openLoginActivity(userSharedPref: UserSharedPref)
+    fun openLoginActivity()
   }
 
   interface Presenter : MvpPresenter {

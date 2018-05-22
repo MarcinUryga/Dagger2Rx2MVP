@@ -23,4 +23,8 @@
     <string name="no_podcasts_to_show_search">No podcasts to show.\nYou can add some podcasts from podcasts searcher.</string>
     <string name="logout">Logout</string>
     <string name="number_of_episodes">%d episodes</string>
+    <string name="unsubscribe">unsubscribe</string>
+    <string name="subscribe">subscribe</string>
+    <string name="more">more</string>
+    <string name="less">less</string>
 </resources>
