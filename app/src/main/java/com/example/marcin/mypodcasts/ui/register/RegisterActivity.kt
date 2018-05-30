@@ -45,6 +45,7 @@ class RegisterActivity : BaseActivity<RegisterContract.Presenter>(), RegisterCon
 
   override fun startMainActivity() {
     startActivity(LaunchActivity.newIntent(this))
+    finish()
   }
 
   override fun hideKeyboard() {

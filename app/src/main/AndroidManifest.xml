@@ -38,6 +38,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <!--services-->
         <service android:name=".services.prefetch_data.PrefetchService" />
+        <service android:name=".services.player_service.PlayerService" />
     </application>
 
 </manifest>

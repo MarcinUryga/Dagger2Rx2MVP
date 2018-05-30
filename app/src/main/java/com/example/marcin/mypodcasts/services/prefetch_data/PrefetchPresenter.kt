@@ -12,7 +12,7 @@ class PrefetchPresenter @Inject constructor(
     private val prefetchUseCase: PrefetchUseCase
 ) : PrefetchContract.Presenter {
 
-  private var disposables: CompositeDisposable? = null
+  private var disposables = CompositeDisposable()
 
   override fun prefetch() {
     val disposable = prefetchUseCase.prefetch()
@@ -20,10 +20,10 @@ class PrefetchPresenter @Inject constructor(
         .doOnComplete { Timber.d("Data prefetched!") }
         .doOnError { e -> Timber.e(e, "Data prefetch failed!") }
         .subscribe()
-    disposables?.add(disposable)
+    disposables.add(disposable)
   }
 
   override fun destroy() {
-    disposables?.clear()
+    disposables.clear()
   }
 }

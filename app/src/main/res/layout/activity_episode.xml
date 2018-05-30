@@ -53,6 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:focusable="false"
             android:clickable="false" />
 
         <TextView
@@ -75,12 +76,12 @@
         android:foreground="@android:color/transparent"
         app:srcCompat="@drawable/ic_play_circle_filled"
         tools:ignore="VectorDrawableCompat" />
-
+<!--
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true" />-->
 
 </RelativeLayout>

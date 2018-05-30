@@ -16,6 +16,7 @@ class GetEpisodeUseCase @Inject constructor(
     return podcastRepository.getEpisodeDetails(podcastId, episodeId)
         .map { episodeDetails ->
           Episode(
+              podcastId = podcastId,
               audioUrl = episodeDetails.audioUrl,
               episodeId = episodeDetails.episodeId,
               title = episodeDetails.title,

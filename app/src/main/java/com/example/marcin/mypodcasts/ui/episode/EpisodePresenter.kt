@@ -2,7 +2,9 @@ package com.example.marcin.mypodcasts.ui.episode
 
 import com.example.marcin.mypodcasts.di.ScreenScope
 import com.example.marcin.mypodcasts.mvp.BasePresenter
+import com.example.marcin.mypodcasts.ui.episode.viewmodel.Episode
 import com.example.marcin.mypodcasts.ui.podcast_details.PodcastIdParam
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -21,7 +23,19 @@ class EpisodePresenter @Inject constructor(
     private val playerManager: PlayerManager
 ) : BasePresenter<EpisodeContract.View>(), EpisodeContract.Presenter {
 
-  override fun onViewCreated() {
+  override fun start() {
+    super.start()
+    view.startPlayerService(podcastIdParam.podcastId, episodeIdParams.episodeId)
+  }
+
+  override fun getEpisode(publishSubject: Observable<Episode>?) {
+    val disposable = publishSubject?.subscribe { episode ->
+      view.showEpisodeDetails(episode)
+    }
+    disposables?.addAll(disposable)
+  }
+
+  /*override fun onViewCreated() {
     super.onViewCreated()
     val disposable = getEpisodeUseCase.get(podcastIdParam.podcastId, episodeIdParams.episodeId)
         .subscribeOn(Schedulers.io())
@@ -30,10 +44,9 @@ class EpisodePresenter @Inject constructor(
         .doFinally { view.hideProgressBar() }
         .subscribe { episode ->
           playerManager.preparePlayer(episode.audioUrl)
-          view.showEpisodeDetails(episode, playerManager.duration)
         }
     disposables?.addAll(disposable)
-  }
+  }*/
 
   override fun handleIncrement() {
     val disposable = Single.timer(1, TimeUnit.SECONDS)

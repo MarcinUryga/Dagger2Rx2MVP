@@ -28,6 +28,7 @@ class LaunchActivity : BaseActivity<LaunchContract.Presenter>(), LaunchContract.
 
   override fun startMainActivity() {
     startActivity(MainActivity.newIntent(this))
+    finish()
   }
 
   override fun displayLaunchAnimation(launchScreenDuration: Long) {

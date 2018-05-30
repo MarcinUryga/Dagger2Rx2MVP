@@ -1,14 +1,18 @@
 package com.example.marcin.mypodcasts.ui.episode
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.text.method.LinkMovementMethod
 import android.text.method.ScrollingMovementMethod
 import android.text.util.Linkify
-import android.view.View
+import android.widget.Toast
 import com.example.marcin.mypodcasts.R
 import com.example.marcin.mypodcasts.mvp.BaseActivity
+import com.example.marcin.mypodcasts.services.player_service.PlayerService
 import com.example.marcin.mypodcasts.ui.episode.viewmodel.Episode
 import com.example.marcin.mypodcasts.ui.podcast_details.PodcastIdParam
 import com.squareup.picasso.Picasso
@@ -20,6 +24,19 @@ import kotlinx.android.synthetic.main.activity_episode.*
  */
 class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContract.View {
 
+  private var playerService: PlayerService? = null
+  private var playerConnection = object : ServiceConnection {
+
+    override fun onServiceConnected(name: ComponentName, service: IBinder) {
+      playerService = (service as PlayerService.PlayerBinder).getService()
+      presenter.getEpisode(playerService?.getPublishSubject())
+    }
+
+    override fun onServiceDisconnected(name: ComponentName) {
+      playerService = null
+    }
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     AndroidInjection.inject(this)
     super.onCreate(savedInstanceState)
@@ -27,6 +44,16 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
     actionButton.isSelected = false
     setSupportActionBar(toolbar)
     descriptionTextView.movementMethod = ScrollingMovementMethod()
+  }
+
+  override fun showToast(episode: Episode) {
+    Toast.makeText(baseContext, episode.toString(), Toast.LENGTH_SHORT).show()
+  }
+
+  override fun startPlayerService(podcastId: Long, episodeId: Long) {
+    val serviceIntent = PlayerService.newIntent(baseContext, PodcastIdParam(podcastId), EpisodeIdParams(episodeId))
+    bindService(serviceIntent, playerConnection, Context.BIND_AUTO_CREATE)
+    startService(serviceIntent)
   }
 
   override fun incrementSeekBar(progress: Int) {
@@ -39,21 +66,22 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
   }
 
   override fun showProgressBar() {
-    progressBar.visibility = View.VISIBLE
+//    progressBar.visibility = View.VISIBLE
   }
 
   override fun hideProgressBar() {
-    progressBar.visibility = View.INVISIBLE
+//    progressBar.visibility = View.INVISIBLE
   }
 
-  override fun showEpisodeDetails(episode: Episode, duration: Int) {
+  override fun showEpisodeDetails(episode: Episode) {
     Picasso.with(baseContext).load(episode.imageUrl).placeholder(getDrawable(R.drawable.podcast_image)).into(podcastImage)
     toolbar.title = episode.title
     descriptionTextView.text = episode.description
     descriptionTextView.movementMethod = LinkMovementMethod.getInstance()
     Linkify.addLinks(descriptionTextView, Linkify.WEB_URLS)
+    updatePlayButtonState(playerService?.getPlayState().let { it!! })
     actionButton.setOnClickListener {
-      presenter.handleActionButton(actionButton.isSelected)
+      updatePlayButtonState(playerService?.playOrPause().let { it!! })
     }
     seekBar.max = transformEpisodeDurationToSeconds(episode.duration)
     elapsedTime.text = "0"
@@ -65,10 +93,10 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
   }
 
   override fun updatePlayButtonState(isSelected: Boolean) {
-    if (actionButton.isSelected) {
-      actionButton.setImageDrawable(getDrawable(PlayButtonIcon.PLAY.id))
-    } else {
+    if (isSelected) {
       actionButton.setImageDrawable(getDrawable(PlayButtonIcon.PAUSE.id))
+    } else {
+      actionButton.setImageDrawable(getDrawable(PlayButtonIcon.PLAY.id))
     }
     actionButton.isSelected = isSelected
   }

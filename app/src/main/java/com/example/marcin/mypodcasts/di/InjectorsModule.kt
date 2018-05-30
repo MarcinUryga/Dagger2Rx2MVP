@@ -1,5 +1,7 @@
 package com.example.marcin.mypodcasts.di
 
+import com.example.marcin.mypodcasts.services.player_service.PlayerModule
+import com.example.marcin.mypodcasts.services.player_service.PlayerService
 import com.example.marcin.mypodcasts.services.prefetch_data.PrefetchModule
 import com.example.marcin.mypodcasts.services.prefetch_data.PrefetchService
 import com.example.marcin.mypodcasts.ui.episode.EpisodeActivity
@@ -62,4 +64,7 @@ abstract class InjectorsModule {
 
   @ContributesAndroidInjector(modules = arrayOf(PrefetchModule::class))
   abstract fun prefetchService(): PrefetchService
+
+  @ContributesAndroidInjector(modules = arrayOf(PlayerModule::class))
+  abstract fun playerService(): PlayerService
 }
