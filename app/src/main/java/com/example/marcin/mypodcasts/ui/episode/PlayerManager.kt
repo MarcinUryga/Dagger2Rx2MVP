@@ -1,7 +1,9 @@
 package com.example.marcin.mypodcasts.ui.episode
 
 import android.media.MediaPlayer
+import io.reactivex.Observable
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -22,11 +24,13 @@ class PlayerManager @Inject constructor(
     prepare()
   }
 
-  fun onPlay() {
+  fun onPlay(): Observable<Pair<Int, Int>>? {
     if (!isStarted) {
       start()
       isStarted = true
+      return ticks()
     }
+    return null
   }
 
   fun onPause() {
@@ -43,11 +47,26 @@ class PlayerManager @Inject constructor(
     }
   }
 
+  fun ticks(): Observable<Pair<Int, Int>> {
+    return Observable.interval(16, TimeUnit.MILLISECONDS)
+        .map { _ ->
+          val currentPositionInSeconds = currentPosition / 1000
+          val durationInSeconds = duration / 1000
+          return@map Pair(currentPositionInSeconds, durationInSeconds)
+        }
+  }
+
   fun killMediaPlayer() {
     try {
       release()
     } catch (e: Exception) {
       Timber.e(e.localizedMessage)
     }
+  }
+
+  companion object {
+
+    const val CLOSE_PLAYER = "close_player"
+    const val TICKS = "ticks"
   }
 }

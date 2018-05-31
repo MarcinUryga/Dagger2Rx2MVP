@@ -12,19 +12,21 @@ interface PlayerContract {
 
     fun createNotification(episode: Episode)
 
-    fun getPlayState(played: Boolean)
-
-//    fun getEpisodeDetails(episode: Episode)
+    fun getTicks(ticks: Pair<Int, Int>)
   }
 
   interface Presenter {
 
     fun getEpisode(podcastId: Long, episodeId: Long)
 
-    fun getPublishSubject(): Observable<Episode>
+    fun getEpisodePublishSubject(): Observable<Episode>
+
+    fun getTicksPublishSubject(): Observable<Pair<Int, Int>>
 
     fun handlePlayOrPause(): Boolean
 
     fun getIsPlayedState(): Boolean
+
+    fun destroy()
   }
 }

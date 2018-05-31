@@ -20,21 +20,15 @@ interface EpisodeContract {
 
     fun updatePlayButtonState(isSelected: Boolean)
 
-    fun setProgressOnSeekBar(startTime: Int)
-
-    fun incrementSeekBar(progress: Int = 1)
-
     fun startPlayerService(podcastId: Long, episodeId: Long)
 
-    fun showToast(episode: Episode)
+    fun updateTimer(ticks: Pair<Int, Int>)
   }
 
   interface Presenter : MvpPresenter {
 
-    fun handleActionButton(isSelected: Boolean)
-
-    fun handleIncrement()
-
     fun getEpisode(publishSubject: Observable<Episode>?)
+
+    fun getTicks(ticksPublishSubject: Observable<Pair<Int, Int>>?)
   }
 }

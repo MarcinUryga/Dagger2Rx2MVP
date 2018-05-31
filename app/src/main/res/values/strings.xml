@@ -27,4 +27,5 @@
     <string name="subscribe">subscribe</string>
     <string name="more">more</string>
     <string name="less">less</string>
+    <string name="cancel">Cancel</string>
 </resources>

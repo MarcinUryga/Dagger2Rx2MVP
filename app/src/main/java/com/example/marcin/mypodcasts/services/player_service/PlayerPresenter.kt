@@ -5,6 +5,7 @@ import com.example.marcin.mypodcasts.ui.episode.PlayerManager
 import com.example.marcin.mypodcasts.ui.episode.viewmodel.Episode
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
@@ -19,8 +20,10 @@ class PlayerPresenter @Inject constructor(
 
   @Inject lateinit var service: PlayerContract.Service
   private val disposables = CompositeDisposable()
-  private val publishSubject = PublishSubject.create<Episode>()
+  private val episodePublishSubject = PublishSubject.create<Episode>()
+  private val ticksPublishSubject = PublishSubject.create<Pair<Int, Int>>()
   private var isPlayed = false
+  private var dis: Disposable? = null
 
   override fun getEpisode(podcastId: Long, episodeId: Long) {
     val disposable = getEpisodeUseCase.get(podcastId, episodeId)
@@ -31,23 +34,36 @@ class PlayerPresenter @Inject constructor(
             playerManager.preparePlayer(episode.audioUrl)
             service.createNotification(episode)
           }
-          publishSubject.onNext(episode)
+          episodePublishSubject.onNext(episode)
         }
     disposables.addAll(disposable)
   }
 
   override fun handlePlayOrPause(): Boolean {
     isPlayed = if (!isPlayed) {
-      playerManager.onPlay()
+      dis = playerManager.onPlay()
+          ?.subscribeOn(Schedulers.io())
+          ?.observeOn(AndroidSchedulers.mainThread())
+          ?.subscribe { ticks ->
+            ticksPublishSubject.onNext(ticks)
+          }
       true
     } else {
+      dis?.dispose()
       playerManager.onPause()
       false
     }
     return isPlayed
   }
 
-  override fun getPublishSubject() = publishSubject
+  override fun getEpisodePublishSubject() = episodePublishSubject
+
+  override fun getTicksPublishSubject() = ticksPublishSubject
 
   override fun getIsPlayedState() = isPlayed
+
+  override fun destroy() {
+    dis?.dispose()
+    playerManager.killMediaPlayer()
+  }
 }

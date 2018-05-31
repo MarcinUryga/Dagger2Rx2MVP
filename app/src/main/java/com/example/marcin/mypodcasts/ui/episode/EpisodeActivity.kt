@@ -1,18 +1,17 @@
 package com.example.marcin.mypodcasts.ui.episode
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.os.Bundle
 import android.os.IBinder
 import android.text.method.LinkMovementMethod
 import android.text.method.ScrollingMovementMethod
 import android.text.util.Linkify
-import android.widget.Toast
+import android.view.View
 import com.example.marcin.mypodcasts.R
+import com.example.marcin.mypodcasts.common.DateUtils
 import com.example.marcin.mypodcasts.mvp.BaseActivity
 import com.example.marcin.mypodcasts.services.player_service.PlayerService
+import com.example.marcin.mypodcasts.ui.episode.PlayerManager.Companion.CLOSE_PLAYER
 import com.example.marcin.mypodcasts.ui.episode.viewmodel.Episode
 import com.example.marcin.mypodcasts.ui.podcast_details.PodcastIdParam
 import com.squareup.picasso.Picasso
@@ -29,11 +28,18 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
 
     override fun onServiceConnected(name: ComponentName, service: IBinder) {
       playerService = (service as PlayerService.PlayerBinder).getService()
-      presenter.getEpisode(playerService?.getPublishSubject())
+      presenter.getEpisode(playerService?.getEpisodePublishSubject())
+      presenter.getTicks(playerService?.getTicksPublishSubject())
     }
 
     override fun onServiceDisconnected(name: ComponentName) {
       playerService = null
+    }
+  }
+
+  private val closePlayerReceiver = object : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+      finish()
     }
   }
 
@@ -42,12 +48,16 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_episode)
     actionButton.isSelected = false
+    registerReceiver(closePlayerReceiver, IntentFilter(CLOSE_PLAYER))
     setSupportActionBar(toolbar)
     descriptionTextView.movementMethod = ScrollingMovementMethod()
   }
 
-  override fun showToast(episode: Episode) {
-    Toast.makeText(baseContext, episode.toString(), Toast.LENGTH_SHORT).show()
+  override fun updateTimer(ticks: Pair<Int, Int>) {
+    seekBar.progress = ticks.first
+    seekBar.max = ticks.second
+    elapsedTime.text = DateUtils.secondsToTimeString(seekBar.progress)
+    remainingTime.text = DateUtils.secondsToTimeString((seekBar.max - seekBar.progress))
   }
 
   override fun startPlayerService(podcastId: Long, episodeId: Long) {
@@ -56,21 +66,12 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
     startService(serviceIntent)
   }
 
-  override fun incrementSeekBar(progress: Int) {
-    if (actionButton.isSelected) {
-      seekBar.progress += progress
-      elapsedTime.text = seekBar.progress.toString()
-      remainingTime.text = (seekBar.max - seekBar.progress).toString()
-      presenter.handleIncrement()
-    }
-  }
-
   override fun showProgressBar() {
-//    progressBar.visibility = View.VISIBLE
+    progressBar.visibility = View.VISIBLE
   }
 
   override fun hideProgressBar() {
-//    progressBar.visibility = View.INVISIBLE
+    progressBar.visibility = View.INVISIBLE
   }
 
   override fun showEpisodeDetails(episode: Episode) {
@@ -83,13 +84,6 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
     actionButton.setOnClickListener {
       updatePlayButtonState(playerService?.playOrPause().let { it!! })
     }
-    seekBar.max = transformEpisodeDurationToSeconds(episode.duration)
-    elapsedTime.text = "0"
-    remainingTime.text = seekBar.max.toString()
-  }
-
-  override fun setProgressOnSeekBar(startTime: Int) {
-    seekBar.progress = startTime
   }
 
   override fun updatePlayButtonState(isSelected: Boolean) {
@@ -101,9 +95,10 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
     actionButton.isSelected = isSelected
   }
 
-  private fun transformEpisodeDurationToSeconds(duration: String): Int {
-    val splitedTime = duration.split(":")
-    return splitedTime[2].toInt() + (60 * splitedTime[1].toInt()) + (3600 * splitedTime[0].toInt())
+  override fun onDestroy() {
+    super.onDestroy()
+    unbindService(playerConnection)
+    unregisterReceiver(closePlayerReceiver)
   }
 
   companion object {

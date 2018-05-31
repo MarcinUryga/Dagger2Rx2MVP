@@ -10,10 +10,10 @@ import android.support.v4.app.NotificationCompat
 import com.example.marcin.mypodcasts.R
 import com.example.marcin.mypodcasts.ui.episode.EpisodeActivity
 import com.example.marcin.mypodcasts.ui.episode.EpisodeIdParams
+import com.example.marcin.mypodcasts.ui.episode.PlayerManager.Companion.CLOSE_PLAYER
 import com.example.marcin.mypodcasts.ui.episode.viewmodel.Episode
 import com.example.marcin.mypodcasts.ui.podcast_details.PodcastIdParam
 import dagger.android.AndroidInjection
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -29,16 +29,21 @@ class PlayerService : Service(), PlayerContract.Service {
   override fun onCreate() {
     AndroidInjection.inject(this)
     super.onCreate()
-    Timber.d("onCreateeeeeeeeeeeeeeeeeeeee!!!!!!!!!!")
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    Timber.d("onStartCommandddddddddddddddddd!!!!!!!!!!")
     if (intent != null) {
-      presenter.getEpisode(
-          podcastId = intent.getLongExtra(PodcastIdParam.PODCAST_ID, 0L),
-          episodeId = intent.getLongExtra(EpisodeIdParams.EPISODE_ID, 0L)
-      )
+      if (intent.action != null && intent.action == CLOSE_PLAYER) {
+        stopSelf()
+        stopForeground(true)
+        sendBroadcast(Intent(CLOSE_PLAYER))
+        onDestroy()
+      } else {
+        presenter.getEpisode(
+            podcastId = intent.getLongExtra(PodcastIdParam.PODCAST_ID, 0L),
+            episodeId = intent.getLongExtra(EpisodeIdParams.EPISODE_ID, 0L)
+        )
+      }
     }
     return super.onStartCommand(intent, flags, startId)
   }
@@ -49,12 +54,27 @@ class PlayerService : Service(), PlayerContract.Service {
         .setContentText(episode.description)
         .setSmallIcon(R.drawable.ic_music_note_black)
         .setContentIntent(getEpisodePendingIntent(episode.podcastId, episode.episodeId))
-        .build()
+        .addAction(
+            android.R.drawable.ic_menu_close_clear_cancel,
+            getString(R.string.cancel),
+            getCancelPendingIntent()
+        ).build()
     startForeground(1, notificationBuilder)
   }
 
-  override fun getPlayState(played: Boolean) {
+  private fun getCancelPendingIntent(): PendingIntent {
+    val intent = Intent(this, PlayerService::class.java)
+    intent.action = CLOSE_PLAYER
+    return PendingIntent.getService(
+        this,
+        2,
+        intent,
+        FLAG_CANCEL_CURRENT
+    )
+  }
 
+  override fun getTicks(ticks: Pair<Int, Int>) {
+//    sendBroadcast(Intent(CLOSE_PLAYER).putExtra("ticks", ticks.first))
   }
 
   private fun getEpisodePendingIntent(podcastId: Long, episodeId: Long): PendingIntent {
@@ -66,11 +86,18 @@ class PlayerService : Service(), PlayerContract.Service {
     )
   }
 
-  fun getPublishSubject() = presenter.getPublishSubject()
+  fun getEpisodePublishSubject() = presenter.getEpisodePublishSubject()
+
+  fun getTicksPublishSubject() = presenter.getTicksPublishSubject()
 
   fun playOrPause() = presenter.handlePlayOrPause()
 
   fun getPlayState() = presenter.getIsPlayedState()
+
+  override fun onDestroy() {
+    super.onDestroy()
+    presenter.destroy()
+  }
 
   companion object {
 
