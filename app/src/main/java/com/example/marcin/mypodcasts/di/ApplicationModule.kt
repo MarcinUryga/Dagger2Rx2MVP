@@ -68,7 +68,7 @@ class ApplicationModule {
           val newRequest = request.newBuilder()
               .addHeader("X-Parse-Application-Id", "DH07L5rkIz4noOLJ6I22pfFlKkh16XI2t2LURZp3")
               .addHeader("X-Parse-REST-API-Key", "b4OB3vVj5eThfT66OAMt76hfQMVvDN08oV2HedyR")
-              .addHeader("limit", "10")
+              .addHeader("limit", "1000")
               .addHeader("X-Parse-Revocable-Session", "1").build()
           chain.proceed(newRequest)
         }
