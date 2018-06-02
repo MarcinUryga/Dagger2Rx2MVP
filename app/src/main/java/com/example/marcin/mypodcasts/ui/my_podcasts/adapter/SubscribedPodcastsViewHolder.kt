@@ -19,7 +19,7 @@ class SubscribedPodcastsViewHolder(itemView: View) : RecyclerView.ViewHolder(ite
       with(itemView) {
         podcastTitle.text = podcast.title
         podcastTitle.textSize = 16f
-        Picasso.with(context).load(podcast.imageUrl).placeholder(R.drawable.podcast_image).into(podcastImage)
+        Picasso.with(context).load(podcast.imageUrl).fit().placeholder(R.drawable.podcast_image).into(podcastImage)
       }
     }
   }

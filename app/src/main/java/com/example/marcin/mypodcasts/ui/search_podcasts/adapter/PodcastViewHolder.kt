@@ -20,7 +20,7 @@ class PodcastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
       podcastTitle.textSize = 16f
       numberOfEpisodes.text = context.getString(R.string.number_of_episodes, podcast.numberOfEpisodes)
       numberOfEpisodes.textSize = 12f
-      Picasso.with(context).load(podcast.thumbUrl).placeholder(R.drawable.podcast_image).into(podcastImage)
+      Picasso.with(context).load(podcast.thumbUrl).fit().placeholder(R.drawable.podcast_image).into(podcastImage)
       actionButton.isSelected = podcast.isSubscribed
       if (podcast.isSubscribed) {
         actionButton.text = context.getString(R.string.unsubscribe)
