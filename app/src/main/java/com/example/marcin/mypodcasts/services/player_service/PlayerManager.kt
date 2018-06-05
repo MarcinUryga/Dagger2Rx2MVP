@@ -1,4 +1,4 @@
-package com.example.marcin.mypodcasts.ui.episode
+package com.example.marcin.mypodcasts.services.player_service
 
 import android.media.MediaPlayer
 import io.reactivex.Observable
@@ -17,10 +17,13 @@ class PlayerManager @Inject constructor(
   private var endTime = 0
   private val forwardTime = 5
   private val backwardTime = 5
+  private var currentAudioUrl: String = ""
+
 
   fun preparePlayer(audioUrl: String) {
     reset()
-    setDataSource(audioUrl)
+    currentAudioUrl = audioUrl
+    setDataSource(currentAudioUrl)
     prepare()
   }
 
@@ -46,6 +49,8 @@ class PlayerManager @Inject constructor(
       isStarted = false
     }
   }
+
+  fun getCurrentAudioUrl() = currentAudioUrl
 
   fun ticks(): Observable<Pair<Int, Int>> {
     return Observable.interval(16, TimeUnit.MILLISECONDS)

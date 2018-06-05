@@ -8,9 +8,9 @@ import android.content.Intent
 import android.os.Binder
 import android.support.v4.app.NotificationCompat
 import com.example.marcin.mypodcasts.R
+import com.example.marcin.mypodcasts.services.player_service.PlayerManager.Companion.CLOSE_PLAYER
 import com.example.marcin.mypodcasts.ui.episode.EpisodeActivity
 import com.example.marcin.mypodcasts.ui.episode.EpisodeIdParams
-import com.example.marcin.mypodcasts.ui.episode.PlayerManager.Companion.CLOSE_PLAYER
 import com.example.marcin.mypodcasts.ui.episode.viewmodel.Episode
 import com.example.marcin.mypodcasts.ui.podcast_details.PodcastIdParam
 import dagger.android.AndroidInjection
@@ -33,16 +33,15 @@ class PlayerService : Service(), PlayerContract.Service {
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
     if (intent != null) {
+      val audioUrl = intent.getStringExtra(getString(R.string.audio_url))
+      if (audioUrl != null) {
+        presenter.preparePlayerManager(audioUrl)
+      }
       if (intent.action != null && intent.action == CLOSE_PLAYER) {
         stopSelf()
         stopForeground(true)
         sendBroadcast(Intent(CLOSE_PLAYER))
         onDestroy()
-      } else {
-        presenter.getEpisode(
-            podcastId = intent.getLongExtra(PodcastIdParam.PODCAST_ID, 0L),
-            episodeId = intent.getLongExtra(EpisodeIdParams.EPISODE_ID, 0L)
-        )
       }
     }
     return super.onStartCommand(intent, flags, startId)
@@ -86,13 +85,15 @@ class PlayerService : Service(), PlayerContract.Service {
     )
   }
 
-  fun getEpisodePublishSubject() = presenter.getEpisodePublishSubject()
+  fun setPlayerState(state: PlayerState) = presenter.setPlayerState(state)
 
   fun getTicksPublishSubject() = presenter.getTicksPublishSubject()
 
-  fun playOrPause() = presenter.handlePlayOrPause()
+  fun prepareAudio(audioUrl: String) = presenter.preparePlayerManager(audioUrl)
 
-  fun getPlayState() = presenter.getIsPlayedState()
+  fun playOrPause(episode: Episode) = presenter.handlePlayOrPause(episode)
+
+  fun getPlayState() = presenter.getPlayerState()
 
   override fun onDestroy() {
     super.onDestroy()
@@ -101,10 +102,8 @@ class PlayerService : Service(), PlayerContract.Service {
 
   companion object {
 
-    fun newIntent(context: Context, podcastIdParam: PodcastIdParam, episodeIdParams: EpisodeIdParams): Intent {
+    fun newIntent(context: Context): Intent {
       return Intent(context, PlayerService::class.java)
-          .putExtras(podcastIdParam.data)
-          .putExtras(episodeIdParams.data)
     }
   }
 

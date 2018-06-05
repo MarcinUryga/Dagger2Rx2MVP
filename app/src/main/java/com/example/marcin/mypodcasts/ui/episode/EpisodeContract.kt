@@ -2,6 +2,7 @@ package com.example.marcin.mypodcasts.ui.episode
 
 import com.example.marcin.mypodcasts.mvp.MvpPresenter
 import com.example.marcin.mypodcasts.mvp.MvpView
+import com.example.marcin.mypodcasts.services.player_service.PlayerState
 import com.example.marcin.mypodcasts.ui.episode.viewmodel.Episode
 import io.reactivex.Observable
 
@@ -18,9 +19,7 @@ interface EpisodeContract {
 
     fun hideProgressBar()
 
-    fun updatePlayButtonState(isSelected: Boolean)
-
-    fun startPlayerService(podcastId: Long, episodeId: Long)
+    fun updatePlayButtonState(playerState: PlayerState?)
 
     fun updateTimer(ticks: Pair<Int, Int>)
   }

@@ -16,7 +16,7 @@
         <!--activities-->
         <activity
             android:name="com.example.marcin.mypodcasts.ui.login.LoginActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/AppThemeNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,18 +25,18 @@
         </activity>
         <activity
             android:name="com.example.marcin.mypodcasts.ui.register.RegisterActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/AppThemeNoActionBar" />
         <activity
             android:name=".ui.launch.LaunchActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/AppThemeNoActionBar" />
         <activity android:name="com.example.marcin.mypodcasts.ui.main.MainActivity" />
         <activity
             android:name=".ui.podcast_details.PodcastDetailsActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/AppThemeNoActionBar" />
         <activity
             android:name=".ui.episode.EpisodeActivity"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/AppThemeNoActionBar" />
         <!--services-->
         <service android:name=".services.prefetch_data.PrefetchService" />
         <service android:name=".services.player_service.PlayerService" />

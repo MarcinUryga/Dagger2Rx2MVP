@@ -12,19 +12,19 @@ import dagger.Provides;
 @Module
 public abstract class EpisodeModule {
 
-    @Binds
-    abstract EpisodeContract.View bindsView(EpisodeActivity view);
+  @Binds
+  abstract EpisodeContract.View bindsView(EpisodeActivity view);
 
-    @Binds
-    abstract EpisodeContract.Presenter bindsPresenter(EpisodePresenter presenter);
+  @Binds
+  abstract EpisodeContract.Presenter bindsPresenter(EpisodePresenter presenter);
 
-    @Provides
-    public static PodcastIdParam providePodcastIdParam(EpisodeActivity activity) {
-        return new PodcastIdParam(activity.getIntent().getExtras());
-    }
+  @Provides
+  static PodcastIdParam providePodcastIdParam(EpisodeActivity activity) {
+    return new PodcastIdParam(activity.getIntent().getExtras());
+  }
 
-    @Provides
-    public static EpisodeIdParams provideEpisodeIdParams(EpisodeActivity activity) {
-        return new EpisodeIdParams(activity.getIntent().getExtras());
-    }
+  @Provides
+  static EpisodeIdParams provideEpisodeIdParams(EpisodeActivity activity) {
+    return new EpisodeIdParams(activity.getIntent().getExtras());
+  }
 }

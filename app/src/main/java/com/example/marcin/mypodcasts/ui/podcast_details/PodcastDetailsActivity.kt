@@ -64,7 +64,11 @@ class PodcastDetailsActivity : BaseActivity<PodcastDetailsContract.Presenter>(),
     }
   }
 
-  override fun startEpisodeActivity(podcastId: Long, episodeId: Long) {
-    startActivity(EpisodeActivity.newIntent(this, PodcastIdParam(podcastId), EpisodeIdParams(episodeId)))
+  override fun startEpisodeActivity(podcastId: Long, episodeId: Long, audioUrl: String) {
+    startActivity(EpisodeActivity.newIntent(
+        this,
+        PodcastIdParam(podcastId),
+        EpisodeIdParams(episodeId))
+    )
   }
 }

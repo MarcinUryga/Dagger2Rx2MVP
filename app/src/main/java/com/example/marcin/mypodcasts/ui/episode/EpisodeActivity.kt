@@ -10,8 +10,9 @@ import android.view.View
 import com.example.marcin.mypodcasts.R
 import com.example.marcin.mypodcasts.common.DateUtils
 import com.example.marcin.mypodcasts.mvp.BaseActivity
+import com.example.marcin.mypodcasts.services.player_service.PlayerManager.Companion.CLOSE_PLAYER
 import com.example.marcin.mypodcasts.services.player_service.PlayerService
-import com.example.marcin.mypodcasts.ui.episode.PlayerManager.Companion.CLOSE_PLAYER
+import com.example.marcin.mypodcasts.services.player_service.PlayerState
 import com.example.marcin.mypodcasts.ui.episode.viewmodel.Episode
 import com.example.marcin.mypodcasts.ui.podcast_details.PodcastIdParam
 import com.squareup.picasso.Picasso
@@ -28,8 +29,8 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
 
     override fun onServiceConnected(name: ComponentName, service: IBinder) {
       playerService = (service as PlayerService.PlayerBinder).getService()
-      presenter.getEpisode(playerService?.getEpisodePublishSubject())
       presenter.getTicks(playerService?.getTicksPublishSubject())
+      updatePlayButtonState(playerService?.getPlayState())
     }
 
     override fun onServiceDisconnected(name: ComponentName) {
@@ -47,10 +48,17 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
     AndroidInjection.inject(this)
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_episode)
-    actionButton.isSelected = false
-    registerReceiver(closePlayerReceiver, IntentFilter(CLOSE_PLAYER))
     setSupportActionBar(toolbar)
+    registerReceiver(closePlayerReceiver, IntentFilter(CLOSE_PLAYER))
     descriptionTextView.movementMethod = ScrollingMovementMethod()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    if (playerService != null) {
+      updatePlayButtonState(playerService?.getPlayState())
+      presenter.getTicks(playerService?.getTicksPublishSubject())
+    }
   }
 
   override fun updateTimer(ticks: Pair<Int, Int>) {
@@ -60,8 +68,8 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
     remainingTime.text = DateUtils.secondsToTimeString((seekBar.max - seekBar.progress))
   }
 
-  override fun startPlayerService(podcastId: Long, episodeId: Long) {
-    val serviceIntent = PlayerService.newIntent(baseContext, PodcastIdParam(podcastId), EpisodeIdParams(episodeId))
+  fun startPlayerService(audioUrl: String = "audio url") {
+    val serviceIntent = PlayerService.newIntent(baseContext).putExtra(getString(R.string.audio_url), audioUrl)
     bindService(serviceIntent, playerConnection, Context.BIND_AUTO_CREATE)
     startService(serviceIntent)
   }
@@ -75,24 +83,24 @@ class EpisodeActivity : BaseActivity<EpisodeContract.Presenter>(), EpisodeContra
   }
 
   override fun showEpisodeDetails(episode: Episode) {
+    startPlayerService(episode.audioUrl)
     Picasso.with(baseContext).load(episode.imageUrl).placeholder(getDrawable(R.drawable.podcast_image)).into(podcastImage)
     toolbar.title = episode.title
+    updateTimer(Pair(0, episode.duration.toInt()))
     descriptionTextView.text = episode.description
     descriptionTextView.movementMethod = LinkMovementMethod.getInstance()
     Linkify.addLinks(descriptionTextView, Linkify.WEB_URLS)
-    updatePlayButtonState(playerService?.getPlayState().let { it!! })
     actionButton.setOnClickListener {
-      updatePlayButtonState(playerService?.playOrPause().let { it!! })
+      updatePlayButtonState(playerService?.playOrPause(episode).let { it!! })
     }
   }
 
-  override fun updatePlayButtonState(isSelected: Boolean) {
-    if (isSelected) {
+  override fun updatePlayButtonState(playerState: PlayerState?) {
+    if (playerState == PlayerState.PLAY) {
       actionButton.setImageDrawable(getDrawable(PlayButtonIcon.PAUSE.id))
     } else {
       actionButton.setImageDrawable(getDrawable(PlayButtonIcon.PLAY.id))
     }
-    actionButton.isSelected = isSelected
   }
 
   override fun onDestroy() {

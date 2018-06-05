@@ -19,7 +19,7 @@ interface PodcastDetailsContract {
 
     fun showDetails(podcastDetails: PodcastDetails)
 
-    fun startEpisodeActivity(podcastId: Long, episodeId: Long)
+    fun startEpisodeActivity(podcastId: Long, episodeId: Long, audioUrl: String)
   }
 
   interface Presenter : MvpPresenter {

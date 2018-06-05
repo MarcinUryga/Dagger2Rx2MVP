@@ -17,16 +17,16 @@ interface PlayerContract {
 
   interface Presenter {
 
-    fun getEpisode(podcastId: Long, episodeId: Long)
-
-    fun getEpisodePublishSubject(): Observable<Episode>
+    fun setPlayerState(state: PlayerState)
 
     fun getTicksPublishSubject(): Observable<Pair<Int, Int>>
 
-    fun handlePlayOrPause(): Boolean
+    fun handlePlayOrPause(epiode: Episode): PlayerState
 
-    fun getIsPlayedState(): Boolean
+    fun getPlayerState(): PlayerState
 
     fun destroy()
+
+    fun preparePlayerManager(audioUrl: String)
   }
 }

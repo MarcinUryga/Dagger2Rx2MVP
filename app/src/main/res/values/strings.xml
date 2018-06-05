@@ -28,4 +28,6 @@
     <string name="more">more</string>
     <string name="less">less</string>
     <string name="cancel">Cancel</string>
+    <string name="audio_url">audio_url</string>
+    <string name="start_time">00:00</string>
 </resources>

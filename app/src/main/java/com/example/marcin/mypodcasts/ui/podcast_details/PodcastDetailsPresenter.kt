@@ -33,7 +33,7 @@ class PodcastDetailsPresenter @Inject constructor(
 
   override fun handleClickedEpisode(onClickedEpisode: Observable<Episode>) {
     val disposable = onClickedEpisode.subscribe { episode ->
-      view.startEpisodeActivity(episode.podcastId, episode.episodeId)
+      view.startEpisodeActivity(episode.podcastId, episode.episodeId, episode.audioUrl)
     }
     disposables?.addAll(disposable)
   }

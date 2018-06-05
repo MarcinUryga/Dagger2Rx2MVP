@@ -10,9 +10,9 @@ import dagger.Module;
 @Module
 public abstract class PlayerModule {
 
-    @Binds
-    abstract public PlayerContract.Service bindsService(PlayerService service);
+  @Binds
+  abstract public PlayerContract.Service bindsService(PlayerService service);
 
-    @Binds
-    abstract public PlayerContract.Presenter bindsPresenter(PlayerPresenter presenter);
+  @Binds
+  abstract public PlayerContract.Presenter bindsPresenter(PlayerPresenter presenter);
 }
